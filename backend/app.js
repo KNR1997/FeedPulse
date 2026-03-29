@@ -1,6 +1,8 @@
 import express from "express";
 import connectDB from "./config/db.js";
 import posts from "./routes/posts.js";
+import feedbacks from "./routes/feedbacks.js";
+
 const port = process.env.PORT || 8000;
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/error.js";
@@ -17,6 +19,7 @@ app.use(logger);
 
 // Routes
 app.use("/api/posts", posts);
+app.use("/api/feedbacks", feedbacks);
 
 // Error handler
 app.use(notFound);
