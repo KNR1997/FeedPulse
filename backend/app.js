@@ -1,4 +1,5 @@
 import express from "express";
+import connectDB from "./config/db.js";
 import posts from "./routes/posts.js";
 const port = process.env.PORT || 8000;
 import logger from "./middleware/logger.js";
@@ -20,6 +21,9 @@ app.use("/api/posts", posts);
 // Error handler
 app.use(notFound);
 app.use(errorHandler);
+
+// Connect to MongoDB
+connectDB();
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
