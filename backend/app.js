@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors';
 import connectDB from "./config/db.js";
 import posts from "./routes/posts.js";
 import feedbacks from "./routes/feedbacks.js";
@@ -9,6 +10,9 @@ import errorHandler from "./middleware/error.js";
 import notFound from "./middleware/notFound.js";
 
 const app = express();
+
+// Adds headers: Access-Control-Allow-Origin: *
+app.use(cors())
 
 // Body parser middleware
 app.use(express.json());
