@@ -1,0 +1,23 @@
+# Dependencies
+/node_modules
+/package-lock.json
+
+# Logs
+*.log
+*.gz
+
+# Environment variables
+.env
+.env.local
+
+# Optional: TypeScript build output
+/dist
+/build
+
+# Optional: Testing and coverage
+/coverage
+/.nyc_output
+
+# Optional: OS and editor files
+.DS_Store
+.vscode
