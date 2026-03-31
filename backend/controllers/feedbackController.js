@@ -16,7 +16,15 @@ export const createFeedback = async (req, res, next) => {
 // @route   GET /api/Feedbacks
 export const getFeedbacks = async (req, res, next) => {
   try {
-    const feedbacks = await Feedback.find();
+    const { category, status } = req.query;
+
+    // Build the filter object dynamically
+    const filter = {};
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+
+    const feedbacks = await Feedback.find(filter).sort({ createdAt: -1 }); // newest first
+
     res.status(200).json(feedbacks);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -40,9 +48,13 @@ export const getFeedback = async (req, res, next) => {
 // @route   UPDATE /api/Feedbacks/:id
 export const updateFeedback = async (req, res, next) => {
   try {
-    const updatedFeedback = await Feedback.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updatedFeedback = await Feedback.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      },
+    );
     if (!updatedFeedback)
       return res.status(404).json({ message: "Feedback not found" });
     res.status(200).json(updatedFeedback);
