@@ -1,13 +1,17 @@
-import { UpdateFeedbackData } from "@/types";
 import axios from "axios";
 
 export const getFeedbacks = async (filters?: {
   category?: string;
   status?: string;
+  page?: number;
+  limit?: number;
 }) => {
   const params = new URLSearchParams();
+
   if (filters?.category) params.append("category", filters.category);
   if (filters?.status) params.append("status", filters.status);
+  if (filters?.page) params.append("page", filters.page.toString());
+  if (filters?.limit) params.append("limit", filters.limit.toString());
 
   const res = await axios.get(
     `http://localhost:8080/api/feedbacks?${params.toString()}`,

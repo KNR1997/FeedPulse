@@ -16,16 +16,32 @@ export const createFeedback = async (req, res, next) => {
 // @route   GET /api/Feedbacks
 export const getFeedbacks = async (req, res, next) => {
   try {
-    const { category, status } = req.query;
+    const { category, status, page = 1, limit = 5 } = req.query;
 
-    // Build the filter object dynamically
     const filter = {};
+
     if (category) filter.category = category;
     if (status) filter.status = status;
 
-    const feedbacks = await Feedback.find(filter).sort({ createdAt: -1 }); // newest first
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
 
-    res.status(200).json(feedbacks);
+    const total = await Feedback.countDocuments(filter);
+
+    const feedbacks = await Feedback.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    res.status(200).json({
+      data: feedbacks,
+      pagination: {
+        total,
+        page: pageNumber,
+        limit: pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

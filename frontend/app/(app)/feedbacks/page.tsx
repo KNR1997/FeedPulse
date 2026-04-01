@@ -11,10 +11,11 @@ import FeedbackFilters from "@/components/feedbacks/feedback-filters";
 export default function Feedbacks() {
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["feedbacks", { category, status }],
-    queryFn: () => getFeedbacks({ category, status }),
+    queryKey: ["feedbacks", { category, status, page }],
+    queryFn: () => getFeedbacks({ category, status, page, limit: 5 }),
   });
 
   if (isLoading) return <p>Loading feedbacks...</p>;
@@ -33,7 +34,11 @@ export default function Feedbacks() {
         }}
       />
 
-      <FeedbackList feedbacks={data} />
+      <FeedbackList
+        feedbacks={data.data}
+        pagination={data.pagination}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

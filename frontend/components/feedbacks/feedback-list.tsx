@@ -20,10 +20,26 @@ import {
   TableHeader,
   TableRow,
   Chip,
+  Pagination,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 
-export const FeedbackList = ({ feedbacks }: { feedbacks: Feedback[] }) => {
+type Props = {
+  feedbacks: Feedback[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  onPageChange: (page: number) => void;
+};
+
+export const FeedbackList = ({
+  feedbacks,
+  pagination,
+  onPageChange,
+}: Props) => {
   const router = useRouter();
 
   const columns = [
@@ -66,21 +82,16 @@ export const FeedbackList = ({ feedbacks }: { feedbacks: Feedback[] }) => {
                   {columnKey === "title" && <span>{feedback.title}</span>}
                   {columnKey === "category" && (
                     <span>
-                      {
-                        <Chip color={feedbackCategoryColor(feedback.category)}>
-                          {feedbackCategoryName(feedback.category)}
-                        </Chip>
-                      }
+                      <Chip color={feedbackCategoryColor(feedback.category)}>
+                        {feedbackCategoryName(feedback.category)}
+                      </Chip>
                     </span>
                   )}
                   {columnKey === "status" && (
                     <span>
-                      {" "}
-                      {
-                        <Chip color={feedbackStatusColor(feedback.status)}>
-                          {feedback.status}
-                        </Chip>
-                      }
+                      <Chip color={feedbackStatusColor(feedback.status)}>
+                        {feedback.status}
+                      </Chip>
                     </span>
                   )}
                   {columnKey === "createdAt" && (
@@ -111,6 +122,13 @@ export const FeedbackList = ({ feedbacks }: { feedbacks: Feedback[] }) => {
           )}
         </TableBody>
       </Table>
+      <div className="flex justify-end">
+        <Pagination
+          page={pagination.page}
+          total={pagination.totalPages}
+          onChange={onPageChange}
+        ></Pagination>
+      </div>
     </div>
   );
 };
