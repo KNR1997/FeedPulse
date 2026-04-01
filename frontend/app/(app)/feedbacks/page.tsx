@@ -16,6 +16,7 @@ export default function Feedbacks() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["feedbacks", { category, status, page }],
     queryFn: () => getFeedbacks({ category, status, page, limit: 5 }),
+    placeholderData: (previousData) => previousData,
   });
 
   if (isLoading) return <p>Loading feedbacks...</p>;
