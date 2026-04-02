@@ -1,11 +1,21 @@
 import Feedback from "../models/Feedback.js";
+import { analyzeFeedbackWithGemini } from "../services/gemini.service.js";
 
 // @desc    Create Feedback
 // @route   Feedback /api/Feedbacks
 export const createFeedback = async (req, res, next) => {
   try {
+    // Save the new feedback to MongoDB
     const newFeedback = new Feedback(req.body);
     const savedFeedback = await newFeedback.save();
+
+    // Call Gemini AI asynchronously (does NOT block response)
+    analyzeFeedbackWithGemini(
+      savedFeedback._id,
+      savedFeedback.title,
+      savedFeedback.description,
+    ).catch((err) => console.error("Gemini analysis error:", err.message));
+
     res.status(201).json(savedFeedback);
   } catch (err) {
     res.status(400).json({ message: err.message });
