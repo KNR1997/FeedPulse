@@ -1,11 +1,11 @@
-"use server";
+import { AUTH_CRED } from "@/utils/constants";
+import Cookie from "js-cookie";
 
-import { cookies } from "next/headers";
-
-export const createAuthCookie = async () => {
-  cookies().set("userAuth", "myToken", { secure: true });
+export const createAuthCookie = async (token: string) => {
+  Cookie.set(AUTH_CRED, token);
 };
 
 export const deleteAuthCookie = async () => {
-  cookies().delete("userAuth");
+  // Cookie.delete("userAuth");
+  Cookie.remove(AUTH_CRED);
 };
