@@ -6,6 +6,7 @@ import {
   getFeedbacks,
   updateFeedback,
 } from "../controllers/feedbackController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -13,15 +14,15 @@ const router = express.Router();
 router.post("/", createFeedback);
 
 // Get all Feedbacks
-router.get("/", getFeedbacks);
+router.get("/", protect, getFeedbacks);
 
 // Get single Feedback
-router.get("/:id", getFeedback);
+router.get("/:id", protect, getFeedback);
 
 // Update single Feedback
-router.put("/:id", updateFeedback);
+router.put("/:id", protect, updateFeedback);
 
 // Delete Feedback
-router.delete("/:id", deleteFeedback);
+router.delete("/:id", protect, deleteFeedback);
 
 export default router;
