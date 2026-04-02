@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 import { Toaster } from "react-hot-toast";
+import { QueryProvider } from "@/providers/query-provider";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -19,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={clsx("font-sans antialiased", fontSans.className)}>
         <Providers>
-          {children}
+          <QueryProvider>{children}</QueryProvider>
           <Toaster position="top-right" />
         </Providers>
       </body>

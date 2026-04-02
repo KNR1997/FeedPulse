@@ -1,11 +1,21 @@
 import Feedback from "../models/Feedback.js";
+import { analyzeFeedbackWithGemini } from "../services/gemini.service.js";
 
 // @desc    Create Feedback
 // @route   Feedback /api/Feedbacks
 export const createFeedback = async (req, res, next) => {
   try {
+    // Save the new feedback to MongoDB
     const newFeedback = new Feedback(req.body);
     const savedFeedback = await newFeedback.save();
+
+    // Call Gemini AI asynchronously (does NOT block response)
+    analyzeFeedbackWithGemini(
+      savedFeedback._id,
+      savedFeedback.title,
+      savedFeedback.description,
+    ).catch((err) => console.error("Gemini analysis error:", err.message));
+
     res.status(201).json(savedFeedback);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -16,8 +26,32 @@ export const createFeedback = async (req, res, next) => {
 // @route   GET /api/Feedbacks
 export const getFeedbacks = async (req, res, next) => {
   try {
-    const feedbacks = await Feedback.find();
-    res.status(200).json(feedbacks);
+    const { category, status, page = 1, limit = 5 } = req.query;
+
+    const filter = {};
+
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
+
+    const total = await Feedback.countDocuments(filter);
+
+    const feedbacks = await Feedback.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    res.status(200).json({
+      data: feedbacks,
+      pagination: {
+        total,
+        page: pageNumber,
+        limit: pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -40,9 +74,13 @@ export const getFeedback = async (req, res, next) => {
 // @route   UPDATE /api/Feedbacks/:id
 export const updateFeedback = async (req, res, next) => {
   try {
-    const updatedFeedback = await Feedback.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updatedFeedback = await Feedback.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      },
+    );
     if (!updatedFeedback)
       return res.status(404).json({ message: "Feedback not found" });
     res.status(200).json(updatedFeedback);

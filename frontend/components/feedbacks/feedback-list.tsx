@@ -1,79 +1,66 @@
+"use client";
+
+import React from "react";
+// types
+import { Feedback } from "@/types";
+// utils
+import { formatISODate } from "@/utils/format-date";
+import { feedbackStatusColor } from "@/utils/feedback-status-color";
 import {
-  Link,
+  feedbackCategoryColor,
+  feedbackCategoryName,
+} from "@/utils/feedback-category-color";
+// ui
+import {
+  Button,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  Chip,
+  Pagination,
 } from "@nextui-org/react";
-import React from "react";
-import { RenderCell } from "../table/render-cell";
+import { useRouter } from "next/navigation";
 
-export const FeedbackList = () => {
+type Props = {
+  feedbacks: Feedback[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  onPageChange: (page: number) => void;
+};
+
+export const FeedbackList = ({
+  feedbacks,
+  pagination,
+  onPageChange,
+}: Props) => {
+  const router = useRouter();
+
   const columns = [
-    { name: "NAME", uid: "name" },
-    { name: "ROLE", uid: "role" },
+    { name: "TITLE", uid: "title" },
+    { name: "CATEGORY", uid: "category" },
     { name: "STATUS", uid: "status" },
+    { name: "DATE", uid: "createdAt" },
     { name: "ACTIONS", uid: "actions" },
   ];
 
-  const users = [
-    {
-      id: 1,
-      name: "Tony Reichert",
-      role: "CEO",
-      team: "Management",
-      status: "active",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-      email: "tony.reichert@example.com",
-    },
-    {
-      id: 2,
-      name: "Zoey Lang",
-      role: "Technical Lead",
-      team: "Development",
-      status: "paused",
-      age: "25",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-      email: "zoey.lang@example.com",
-    },
-    {
-      id: 3,
-      name: "Jane Fisher",
-      role: "Senior Developer",
-      team: "Development",
-      status: "active",
-      age: "22",
-      avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-      email: "jane.fisher@example.com",
-    },
-    {
-      id: 4,
-      name: "William Howard",
-      role: "Community Manager",
-      team: "Marketing",
-      status: "vacation",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-      email: "william.howard@example.com",
-    },
-    {
-      id: 5,
-      name: "Kristen Copper",
-      role: "Sales Manager",
-      team: "Sales",
-      status: "active",
-      age: "24",
-      avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-      email: "kristen.cooper@example.com",
-    },
-  ];
+  const handleViewFeedback = (feedbackId: string) => {
+    router.push(`/feedbacks/${feedbackId}`);
+  };
+
+  const handleFeedbackDelete = (feedbackId: string) => {
+    console.log("delete feedback---------: ", feedbackId);
+  };
 
   return (
-    <div className=" w-full flex flex-col gap-4">
-      <Table aria-label="Example table with custom cells">
+    <div className="w-full flex flex-col gap-4">
+      <Table aria-label="Feedback table">
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
@@ -85,18 +72,63 @@ export const FeedbackList = () => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
-          {(item) => (
-            <TableRow>
+
+        <TableBody items={feedbacks}>
+          {(feedback) => (
+            <TableRow key={feedback._id}>
               {(columnKey) => (
                 <TableCell>
-                  {RenderCell({ user: item, columnKey: columnKey })}
+                  {/* Inline cell rendering logic */}
+                  {columnKey === "title" && <span>{feedback.title}</span>}
+                  {columnKey === "category" && (
+                    <span>
+                      <Chip color={feedbackCategoryColor(feedback.category)}>
+                        {feedbackCategoryName(feedback.category)}
+                      </Chip>
+                    </span>
+                  )}
+                  {columnKey === "status" && (
+                    <span>
+                      <Chip color={feedbackStatusColor(feedback.status)}>
+                        {feedback.status}
+                      </Chip>
+                    </span>
+                  )}
+                  {columnKey === "createdAt" && (
+                    <span>{formatISODate(feedback.createdAt)}</span>
+                  )}
+
+                  {columnKey === "actions" && (
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        size="sm"
+                        color="primary"
+                        onPress={() => handleViewFeedback(feedback._id)}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="danger"
+                        onPress={() => handleFeedbackDelete(feedback._id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  )}
                 </TableCell>
               )}
             </TableRow>
           )}
         </TableBody>
       </Table>
+      <div className="flex justify-end">
+        <Pagination
+          page={pagination.page}
+          total={pagination.totalPages}
+          onChange={onPageChange}
+        ></Pagination>
+      </div>
     </div>
   );
 };
