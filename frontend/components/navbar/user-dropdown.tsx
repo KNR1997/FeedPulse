@@ -11,6 +11,7 @@ import React, { useCallback } from "react";
 import { DarkModeSwitch } from "./darkmodeswitch";
 import { useRouter } from "next/navigation";
 import { deleteAuthCookie } from "@/actions/auth.action";
+import { AvatarIcon } from "../icons/avatar";
 
 export const UserDropdown = () => {
   const router = useRouter();
@@ -24,22 +25,27 @@ export const UserDropdown = () => {
     <Dropdown>
       <NavbarItem>
         <DropdownTrigger>
-          <Avatar
+          <button className="border-none outline-none focus:outline-none focus:ring-0">
+            <AvatarIcon />
+          </button>
+
+          {/* <Avatar
             as='button'
             color='secondary'
             size='md'
             src='https://i.pravatar.cc/150?u=a042581f4e29026704d'
-          />
+          /> */}
         </DropdownTrigger>
       </NavbarItem>
       <DropdownMenu
-        aria-label='User menu actions'
-        onAction={(actionKey) => console.log({ actionKey })}>
+        aria-label="User menu actions"
+        onAction={(actionKey) => console.log({ actionKey })}
+      >
         <DropdownItem
-          key='profile'
-          className='flex flex-col justify-start w-full items-start'>
-          <p>Signed in as</p>
-          <p>zoey@example.com</p>
+          key="profile"
+          className="flex flex-col justify-start w-full items-start"
+        >
+          <p>Signed in as John Doe</p>
         </DropdownItem>
         {/* <DropdownItem key='settings'>My Settings</DropdownItem>
         <DropdownItem key='team_settings'>Team Settings</DropdownItem>
@@ -47,15 +53,16 @@ export const UserDropdown = () => {
         <DropdownItem key='system'>System</DropdownItem>
         <DropdownItem key='configurations'>Configurations</DropdownItem>
         <DropdownItem key='help_and_feedback'>Help & Feedback</DropdownItem> */}
-        <DropdownItem
-          key='logout'
-          color='danger'
-          className='text-danger'
-          onPress={handleLogout}>
-          Log Out
-        </DropdownItem>
-        <DropdownItem key='switch'>
+        <DropdownItem key="switch">
           <DarkModeSwitch />
+        </DropdownItem>
+        <DropdownItem
+          key="logout"
+          color="danger"
+          className="text-danger"
+          onPress={handleLogout}
+        >
+          Log Out
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

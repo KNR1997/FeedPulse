@@ -1,10 +1,13 @@
 import "@/styles/globals.css";
+import clsx from "clsx";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
 import { fontSans } from "@/config/fonts";
-import clsx from "clsx";
 import { Toaster } from "react-hot-toast";
 import { QueryProvider } from "@/providers/query-provider";
+// components
+import ManagedModal from "@/components/ui/modal/managed-modal";
+import { ModalProvider } from "@/components/ui/modal/modal-context";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -20,7 +23,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={clsx("font-sans antialiased", fontSans.className)}>
         <Providers>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <ModalProvider>
+              {children}
+              <ManagedModal />
+            </ModalProvider>
+          </QueryProvider>
           <Toaster position="top-right" />
         </Providers>
       </body>

@@ -5,6 +5,8 @@ import {
   getFeedback,
   getFeedbacks,
   updateFeedback,
+  retriggerFeedbackAnalysis,
+  getFeedbackAnalytics,
 } from "../controllers/feedbackController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -16,6 +18,9 @@ router.post("/", createFeedback);
 // Get all Feedbacks
 router.get("/", protect, getFeedbacks);
 
+// Analytics of Feedbacks
+router.get("/analytics", protect, getFeedbackAnalytics);
+
 // Get single Feedback
 router.get("/:id", protect, getFeedback);
 
@@ -24,5 +29,8 @@ router.put("/:id", protect, updateFeedback);
 
 // Delete Feedback
 router.delete("/:id", protect, deleteFeedback);
+
+// Re-trigger AI analysis
+router.post("/:id/analyze", protect, retriggerFeedbackAnalysis);
 
 export default router;

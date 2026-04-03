@@ -47,7 +47,7 @@ export const SidebarWrapper = () => {
                 isActive={pathname === "/feedbacks"}
                 title="Feedbacks"
                 icon={<AccountsIcon />}
-                href="feedbacks"
+                href="/feedbacks"
               />
             </SidebarMenu>
           </div>

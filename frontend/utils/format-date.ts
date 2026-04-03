@@ -13,5 +13,6 @@ export function formatISODate(isoDate: string) {
     // timeZoneName: "short", // e.g., "GMT"
   };
 
+  // @ts-ignore
   return date.toLocaleString(undefined, options);
 }

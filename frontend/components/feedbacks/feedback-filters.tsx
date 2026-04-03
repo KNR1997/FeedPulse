@@ -1,48 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useAtom } from "jotai";
 // types
 import { FeedbackCategoryType, FeedbackStatusType } from "@/types";
 // ui
 import { Button, Select, SelectItem } from "@nextui-org/react";
+import {
+  feedbackCategoryAtom,
+  feedbackPageAtom,
+  feedbackStatusAtom,
+} from "@/store/feedback-filters";
 
-type Props = {
-  onCategoryFilter: (newValue: string) => void;
-  onStatusFilter: (newValue: string) => void;
-  className?: string;
-};
-
-export default function FeedbackFilters({
-  onCategoryFilter,
-  onStatusFilter,
-}: Props) {
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("");
+export default function FeedbackFilters() {
+  const [category, setCategory] = useAtom(feedbackCategoryAtom);
+  const [status, setStatus] = useAtom(feedbackStatusAtom);
+  const [, setPage] = useAtom(feedbackPageAtom);
 
   const handleCategoryChange = (keys: any) => {
     const selected = Array.from(keys)[0] as string;
     setCategory(selected || "");
-    onCategoryFilter(selected || "");
+    setPage(1);
   };
 
   const handleStatusChange = (keys: any) => {
     const selected = Array.from(keys)[0] as string;
     setStatus(selected || "");
-    onStatusFilter(selected || "");
+    setPage(1);
   };
 
   const handleReset = () => {
     setCategory("");
     setStatus("");
-    onCategoryFilter("");
-    onStatusFilter("");
+    setPage(1);
   };
 
   return (
     <div className="flex gap-4 mb-4 items-end">
       {/* Category Select */}
       <Select
-        label="Category"
+        // label="Category"
         placeholder="All Categories"
         variant="bordered"
         className="max-w-xs"
@@ -64,7 +60,7 @@ export default function FeedbackFilters({
 
       {/* Status Select */}
       <Select
-        label="Status"
+        // label="Status"
         placeholder="All Statuses"
         variant="bordered"
         className="max-w-xs"
@@ -79,7 +75,7 @@ export default function FeedbackFilters({
       </Select>
 
       {/* Reset Button */}
-      <Button size="lg" color="primary" variant="flat" onPress={handleReset}>
+      <Button size="md" color="primary" variant="flat" onPress={handleReset}>
         Reset
       </Button>
     </div>

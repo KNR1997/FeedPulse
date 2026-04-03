@@ -1,24 +1,52 @@
-import Feedback from "../models/Feedback.js";
-import { analyzeFeedbackWithGemini } from "../services/gemini.service.js";
+import {
+  createFeedbackDto,
+  feedbackListDto,
+  feedbackResponseDto,
+} from "../dtos/feedback.dto.js";
+import {
+  createFeedbackService,
+  deleteFeedbackService,
+  getFeedbackAnalyticsService,
+  getFeedbackService,
+  getFeedbacksService,
+  retriggerFeedbackAnalysisService,
+  updateFeedbackService,
+} from "../services/feedback.serivce.js";
+import { errorResponse, successResponse } from "../utils/apiResponse.js";
 
 // @desc    Create Feedback
-// @route   Feedback /api/Feedbacks
+// @route   POST /api/Feedbacks
 export const createFeedback = async (req, res, next) => {
   try {
-    // Save the new feedback to MongoDB
-    const newFeedback = new Feedback(req.body);
-    const savedFeedback = await newFeedback.save();
+    const dto = createFeedbackDto(req.body);
+    const feedback = await createFeedbackService(dto);
 
-    // Call Gemini AI asynchronously (does NOT block response)
-    analyzeFeedbackWithGemini(
-      savedFeedback._id,
-      savedFeedback.title,
-      savedFeedback.description,
-    ).catch((err) => console.error("Gemini analysis error:", err.message));
-
-    res.status(201).json(savedFeedback);
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback created successfully",
+      201,
+    );
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, err.message, 400);
+  }
+};
+
+// @desc    Re-trigger Feedback analysis
+// @route   POST /api/Feedbacks/:id/analyze
+export const retriggerFeedbackAnalysis = async (req, res, next) => {
+  try {
+    const feedbackId = req.params.id;
+    const feedback = await retriggerFeedbackAnalysisService(feedbackId);
+
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback analysis triggered",
+      200,
+    );
+  } catch (err) {
+    return errorResponse(res, err.message, 400);
   }
 };
 
@@ -26,34 +54,14 @@ export const createFeedback = async (req, res, next) => {
 // @route   GET /api/Feedbacks
 export const getFeedbacks = async (req, res, next) => {
   try {
-    const { category, status, page = 1, limit = 5 } = req.query;
+    const result = await getFeedbacksService(req.query);
 
-    const filter = {};
-
-    if (category) filter.category = category;
-    if (status) filter.status = status;
-
-    const pageNumber = parseInt(page);
-    const pageSize = parseInt(limit);
-
-    const total = await Feedback.countDocuments(filter);
-
-    const feedbacks = await Feedback.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize);
-
-    res.status(200).json({
-      data: feedbacks,
-      pagination: {
-        total,
-        page: pageNumber,
-        limit: pageSize,
-        totalPages: Math.ceil(total / pageSize),
-      },
+    return successResponse(res, {
+      feedbacks: feedbackListDto(result.data),
+      pagination: result.pagination,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, err.message, 500);
   }
 };
 
@@ -61,12 +69,17 @@ export const getFeedbacks = async (req, res, next) => {
 // @route   GET /api/Feedbacks/:id
 export const getFeedback = async (req, res, next) => {
   try {
-    const feedback = await Feedback.findById(req.params.id);
-    if (!feedback)
-      return res.status(404).json({ message: "Feedback not found" });
-    res.status(200).json(feedback);
+    const feedback = await getFeedbackService(req.params.id);
+
+    if (!feedback) return errorResponse(res, "Feedback not found", 404);
+
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback retrieved",
+    );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, err.message, 500);
   }
 };
 
@@ -74,18 +87,17 @@ export const getFeedback = async (req, res, next) => {
 // @route   UPDATE /api/Feedbacks/:id
 export const updateFeedback = async (req, res, next) => {
   try {
-    const updatedFeedback = await Feedback.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      },
+    const feedback = await updateFeedbackService(req.params.id, req.body);
+
+    if (!feedback) return errorResponse(res, "Feedback not found", 404);
+
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback updated",
     );
-    if (!updatedFeedback)
-      return res.status(404).json({ message: "Feedback not found" });
-    res.status(200).json(updatedFeedback);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, err.message, 400);
   }
 };
 
@@ -93,11 +105,28 @@ export const updateFeedback = async (req, res, next) => {
 // @route   DELETE /api/Feedbacks/:id
 export const deleteFeedback = async (req, res, next) => {
   try {
-    const deletedFeedback = await Feedback.findByIdAndDelete(req.params.id);
-    if (!deletedFeedback)
-      return res.status(404).json({ message: "Feedback not found" });
-    res.status(200).json({ message: "Feedback deleted" });
+    const feedback = await deleteFeedbackService(req.params.id);
+
+    if (!feedback) return errorResponse(res, "Feedback not found", 404);
+
+    return successResponse(res, null, "Feedback deleted successfully");
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, err.message, 500);
+  }
+};
+
+// @desc    Get Feedback Analytics
+// @route   GET /api/Feedbacks/analytics
+export const getFeedbackAnalytics = async (req, res) => {
+  try {
+    const analytics = await getFeedbackAnalyticsService();
+
+    return successResponse(
+      res,
+      analytics,
+      "Feedback analytics retrieved successfully",
+    );
+  } catch (err) {
+    return errorResponse(res, err.message, 500);
   }
 };

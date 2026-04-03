@@ -45,6 +45,7 @@ export const analyzeFeedbackWithGemini = async (
       ai_priority: aiData.priority_score,
       ai_summary: aiData.summary,
       ai_tags: aiData.tags,
+      ai_processed: true,
     });
 
     console.log("Gemini analysis saved for:", feedbackId);
