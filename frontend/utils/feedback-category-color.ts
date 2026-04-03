@@ -1,4 +1,4 @@
-import { FeedbackCategoryType } from "@/types";
+import { FeedbackCategoryType, FeedbackSentimentType } from "@/types";
 
 export const feedbackCategoryColor = (
   feedbackCategory: FeedbackCategoryType,
@@ -25,5 +25,17 @@ export const feedbackCategoryName = (
     return "Improvement";
   } else if (feedbackCategory == FeedbackCategoryType.OTHER) {
     return "Other";
+  }
+};
+
+export const feedbackSentimentColor = (
+  feedbackSentimentType: FeedbackSentimentType,
+) => {
+  if (feedbackSentimentType == FeedbackSentimentType.NEGATIVE) {
+    return "danger";
+  } else if (feedbackSentimentType == FeedbackSentimentType.POSITIVE) {
+    return "success";
+  } else if (feedbackSentimentType == FeedbackSentimentType.NEUTRAL) {
+    return "primary";
   }
 };
