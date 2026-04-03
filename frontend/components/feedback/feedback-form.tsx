@@ -1,58 +1,43 @@
 "use client";
 
-import axios from "axios";
 import { Formik } from "formik";
-import toast from "react-hot-toast";
 import { Button, Input, Textarea, Select, SelectItem } from "@nextui-org/react";
 // validations
 import { FeedbackSchema } from "./feedback-validation-schema";
+// hooks
+import { useCreateFeedbackMutation } from "@/data/feedback";
+import { FeedbackCategoryType } from "@/types";
 
 interface IFormValues {
   title: string;
   description: string;
-  category: string;
+  category: FeedbackCategoryType;
   name: string;
   email: string;
-}
-
-enum CategoryType {
-  BUG = "Bug",
-  FEATURE_REQUEST = "Feature Request",
-  IMPROVEMENT = "Improvement",
-  OTHER = "Other",
 }
 
 export const FeedbackForm = () => {
   const initialValues: IFormValues = {
     title: "",
     description: "",
-    category: "",
+    category: FeedbackCategoryType.BUG,
     name: "",
     email: "",
   };
 
+  // mutations
+  const { mutateAsync: createFeedback, isPending: isCreating } =
+    useCreateFeedbackMutation();
+
   const handleFeedbackSubmit = async (
     values: IFormValues,
-    resetForm: () => void,
+    { resetForm }: { resetForm: () => void },
   ) => {
-    try {
-      const dataToSend = {
-        title: values.title,
-        description: values.description,
-        category: values.category,
-        name: values.name,
-        email: values.email,
-      };
-
-      const response = await axios.post(
-        "http://localhost:8080/api/feedbacks",
-        dataToSend,
-      );
-      toast.success("Feedback submitted successfully 🎉");
-      resetForm();
-    } catch (error) {
-      toast.error("Failed to submit feedback ❌");
-    }
+    await createFeedback(values, {
+      onSuccess: () => {
+        resetForm();
+      },
+    });
   };
 
   return (
@@ -64,9 +49,7 @@ export const FeedbackForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={FeedbackSchema}
-        onSubmit={(values, { resetForm }) =>
-          handleFeedbackSubmit(values, resetForm)
-        }
+        onSubmit={handleFeedbackSubmit}
       >
         {({
           values,
@@ -90,9 +73,11 @@ export const FeedbackForm = () => {
                 variant="bordered"
                 label="Description"
                 value={values.description}
+                maxLength={500}
                 isInvalid={!!errors.description && !!touched.description}
                 errorMessage={errors.description}
                 onChange={handleChange("description")}
+                description={`${values.description.length}/500 characters`}
               />
               <Select
                 label="Category"
@@ -105,7 +90,7 @@ export const FeedbackForm = () => {
                   setFieldValue("category", selected);
                 }}
               >
-                {Object.values(CategoryType).map((category) => (
+                {Object.values(FeedbackCategoryType).map((category) => (
                   <SelectItem key={category}>{category}</SelectItem>
                 ))}
               </Select>
@@ -131,6 +116,7 @@ export const FeedbackForm = () => {
               onPress={() => handleSubmit()}
               variant="flat"
               color="primary"
+              disabled={isCreating}
             >
               Submit
             </Button>
