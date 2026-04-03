@@ -3,6 +3,7 @@
 import { ModalBody, ModalFooter, ModalHeader, Button } from "@nextui-org/react";
 // hooks
 import { useDeleteFeedbackMutation } from "@/data/feedback";
+// components
 import { useModalAction } from "@/components/ui/modal/modal-context";
 
 export default function DeleteFeedbackModal({
@@ -12,7 +13,16 @@ export default function DeleteFeedbackModal({
 }) {
   const { closeModal } = useModalAction();
   // mutation
-  const { mutate: deleteFeedback, isPending } = useDeleteFeedbackMutation();
+  const { mutateAsync: deleteFeedback, isPending } =
+    useDeleteFeedbackMutation();
+
+  const handleFeedbackDelete = async () => {
+    await deleteFeedback(feedbackId, {
+      onSuccess: () => {
+        closeModal();
+      },
+    });
+  };
 
   return (
     <>
@@ -30,7 +40,7 @@ export default function DeleteFeedbackModal({
         <Button
           color="danger"
           isLoading={isPending}
-          onPress={() => deleteFeedback(feedbackId)}
+          onPress={() => handleFeedbackDelete()}
         >
           Delete
         </Button>
