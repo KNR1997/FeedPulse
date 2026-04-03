@@ -11,20 +11,31 @@ export enum FeedbackStatusType {
   RESOLVED = "Resolved",
 }
 
+export enum FeedbackSentimentType {
+  NEGATIVE = "Negative",
+  POSITIVE = "Positvie",
+  NEUTRAL = "Neutral",
+}
+
 export interface Feedback {
-  _id: string;
+  id: string;
   title: string;
   category: FeedbackCategoryType;
   status: FeedbackStatusType;
   description: string;
   createdAt: string;
+  // ai fields
+  ai_processed: string;
+  ai_category: string;
+  ai_sentiment: FeedbackSentimentType;
+  ai_priority: string;
+  ai_summary: string;
 }
 
 export interface CreateFeedbackInput {
   title: string;
-  category: FeedbackCategoryType;
-  status: FeedbackStatusType;
   description: string;
+  category: FeedbackCategoryType;
 }
 
 export interface UpdateFeedbackData {

@@ -6,6 +6,7 @@ import {
   getFeedbacks,
   updateFeedback,
   retriggerFeedbackAnalysis,
+  getFeedbackAnalytics,
 } from "../controllers/feedbackController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -16,6 +17,9 @@ router.post("/", createFeedback);
 
 // Get all Feedbacks
 router.get("/", protect, getFeedbacks);
+
+// Analytics of Feedbacks
+router.get("/analytics", protect, getFeedbackAnalytics);
 
 // Get single Feedback
 router.get("/:id", protect, getFeedback);

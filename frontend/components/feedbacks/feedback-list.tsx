@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 // types
 import { Feedback } from "@/types";
 // utils
@@ -9,10 +8,10 @@ import { feedbackStatusColor } from "@/utils/feedback-status-color";
 import {
   feedbackCategoryColor,
   feedbackCategoryName,
+  feedbackSentimentColor,
 } from "@/utils/feedback-category-color";
 // ui
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -22,7 +21,12 @@ import {
   Chip,
   Pagination,
 } from "@nextui-org/react";
+// hooks
 import { useRouter } from "next/navigation";
+import { useModalAction } from "@/components/ui/modal/modal-context";
+// components
+import { EditIcon } from "@/components/icons/edit";
+import { TrashIcon } from "@/components/icons/trash";
 
 type Props = {
   feedbacks: Feedback[];
@@ -41,10 +45,13 @@ export const FeedbackList = ({
   onPageChange,
 }: Props) => {
   const router = useRouter();
+  const { openModal } = useModalAction();
 
   const columns = [
     { name: "TITLE", uid: "title" },
     { name: "CATEGORY", uid: "category" },
+    { name: "SENTIMENT", uid: "ai_sentiment" },
+    { name: "PRIORITY_SCORE", uid: "ai_priority" },
     { name: "STATUS", uid: "status" },
     { name: "DATE", uid: "createdAt" },
     { name: "ACTIONS", uid: "actions" },
@@ -55,7 +62,7 @@ export const FeedbackList = ({
   };
 
   const handleFeedbackDelete = (feedbackId: string) => {
-    console.log("delete feedback---------: ", feedbackId);
+    openModal("DELETE_FEEDBACK", feedbackId);
   };
 
   return (
@@ -75,7 +82,7 @@ export const FeedbackList = ({
 
         <TableBody items={feedbacks}>
           {(feedback) => (
-            <TableRow key={feedback._id}>
+            <TableRow key={feedback.id}>
               {(columnKey) => (
                 <TableCell>
                   {/* Inline cell rendering logic */}
@@ -85,6 +92,20 @@ export const FeedbackList = ({
                       <Chip color={feedbackCategoryColor(feedback.category)}>
                         {feedbackCategoryName(feedback.category)}
                       </Chip>
+                    </span>
+                  )}
+                  {columnKey === "ai_sentiment" && (
+                    <span>
+                      <Chip
+                        color={feedbackSentimentColor(feedback.ai_sentiment)}
+                      >
+                        {feedback?.ai_sentiment}
+                      </Chip>
+                    </span>
+                  )}
+                  {columnKey === "ai_priority" && (
+                    <span>
+                      {feedback?.ai_priority ? feedback.ai_priority : "_"}
                     </span>
                   )}
                   {columnKey === "status" && (
@@ -100,20 +121,15 @@ export const FeedbackList = ({
 
                   {columnKey === "actions" && (
                     <div className="flex gap-2 justify-center">
-                      <Button
-                        size="sm"
-                        color="primary"
-                        onPress={() => handleViewFeedback(feedback._id)}
-                      >
-                        View
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="danger"
-                        onPress={() => handleFeedbackDelete(feedback._id)}
-                      >
-                        Delete
-                      </Button>
+                      <button onClick={() => handleViewFeedback(feedback.id)}>
+                        <EditIcon height={16} />
+                      </button>
+                      <button onClick={() => handleFeedbackDelete(feedback.id)}>
+                        <TrashIcon
+                          className="text-red-500 ml-2 transition duration-200 hover:text-red-600 focus:outline-none"
+                          width={14}
+                        />
+                      </button>
                     </div>
                   )}
                 </TableCell>
@@ -127,7 +143,7 @@ export const FeedbackList = ({
           page={pagination.page}
           total={pagination.totalPages}
           onChange={onPageChange}
-        ></Pagination>
+        />
       </div>
     </div>
   );

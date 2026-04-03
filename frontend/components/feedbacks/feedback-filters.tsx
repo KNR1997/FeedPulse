@@ -38,7 +38,7 @@ export default function FeedbackFilters() {
     <div className="flex gap-4 mb-4 items-end">
       {/* Category Select */}
       <Select
-        label="Category"
+        // label="Category"
         placeholder="All Categories"
         variant="bordered"
         className="max-w-xs"
@@ -60,7 +60,7 @@ export default function FeedbackFilters() {
 
       {/* Status Select */}
       <Select
-        label="Status"
+        // label="Status"
         placeholder="All Statuses"
         variant="bordered"
         className="max-w-xs"
@@ -75,7 +75,7 @@ export default function FeedbackFilters() {
       </Select>
 
       {/* Reset Button */}
-      <Button size="lg" color="primary" variant="flat" onPress={handleReset}>
+      <Button size="md" color="primary" variant="flat" onPress={handleReset}>
         Reset
       </Button>
     </div>

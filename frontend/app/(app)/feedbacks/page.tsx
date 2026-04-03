@@ -19,11 +19,11 @@ export default function Feedbacks() {
   const status = useAtomValue(feedbackStatusAtom);
   const [page, setPage] = useAtom(feedbackPageAtom);
   // query
-  const { feedbacks, paginationrInfo, loading, error } = useFeedbacksQuery(
+  const { feedbacks, paginationrInfo, loading, error } = useFeedbacksQuery({
     category,
     status,
     page,
-  );
+  });
 
   if (loading) return <p>Loading feedbacks...</p>;
   if (error) return <p>Failed to load feedbacks</p>;

@@ -4,6 +4,8 @@ import connectDB from "./config/db.js";
 import auth from "./routes/auth.js";
 import posts from "./routes/posts.js";
 import feedbacks from "./routes/feedbacks.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpecs from "./swagger.js";
 
 const port = process.env.PORT || 8000;
 import logger from "./middleware/logger.js";
@@ -21,6 +23,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // Logger middleware
 app.use(logger);
+
+// Swagger documentation route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Routes
 app.use("/api/auth", auth);

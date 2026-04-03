@@ -6,6 +6,7 @@ import {
 import {
   createFeedbackService,
   deleteFeedbackService,
+  getFeedbackAnalyticsService,
   getFeedbackService,
   getFeedbacksService,
   retriggerFeedbackAnalysisService,
@@ -109,6 +110,22 @@ export const deleteFeedback = async (req, res, next) => {
     if (!feedback) return errorResponse(res, "Feedback not found", 404);
 
     return successResponse(res, null, "Feedback deleted successfully");
+  } catch (err) {
+    return errorResponse(res, err.message, 500);
+  }
+};
+
+// @desc    Get Feedback Analytics
+// @route   GET /api/Feedbacks/analytics
+export const getFeedbackAnalytics = async (req, res) => {
+  try {
+    const analytics = await getFeedbackAnalyticsService();
+
+    return successResponse(
+      res,
+      analytics,
+      "Feedback analytics retrieved successfully",
+    );
   } catch (err) {
     return errorResponse(res, err.message, 500);
   }

@@ -21,7 +21,7 @@ export const createFeedbackService = async (createDto) => {
 export const retriggerFeedbackAnalysisService = async (feedbackId) => {
   const feedback = await Feedback.findById(feedbackId);
   if (!feedback) throw new Error("Feedback not found");
-  
+
   // async Gemini call
   analyzeFeedbackWithGemini(
     feedback._id,
@@ -74,4 +74,69 @@ export const updateFeedbackService = async (id, data) => {
 // Delete
 export const deleteFeedbackService = async (id) => {
   return await Feedback.findByIdAndDelete(id);
+};
+
+// Feedback Analytics
+export const getFeedbackAnalyticsService = async () => {
+  const analytics = await Feedback.aggregate([
+    {
+      $facet: {
+        statusCounts: [
+          {
+            $group: {
+              _id: "$status",
+              count: { $sum: 1 },
+            },
+          },
+        ],
+
+        avgPriority: [
+          {
+            $group: {
+              _id: null,
+              averagePriority: { $avg: "$ai_priority" },
+            },
+          },
+        ],
+
+        tags: [
+          { $unwind: "$ai_tags" },
+          {
+            $group: {
+              _id: "$ai_tags",
+              count: { $sum: 1 },
+            },
+          },
+          { $sort: { count: -1 } },
+          { $limit: 1 },
+        ],
+
+        total: [
+          {
+            $count: "totalFeedbacks",
+          },
+        ],
+      },
+    },
+  ]);
+
+  const result = analytics[0];
+
+  const statusMap = {
+    New: 0,
+    "In Review": 0,
+    Resolved: 0,
+  };
+
+  result.statusCounts.forEach((s) => {
+    statusMap[s._id] = s.count;
+  });
+
+  return {
+    totalFeedbacks: result.total[0]?.totalFeedbacks || 0,
+    statusCounts: statusMap,
+    averagePriority: result.avgPriority[0]?.averagePriority || 0,
+    mostCommonTag: result.tags[0]?._id || null,
+    mostCommonTagCount: result.tags[0]?.count || 0,
+  };
 };
