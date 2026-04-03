@@ -1,24 +1,29 @@
 "use client";
 
-import { useAtom } from "jotai";
-import { useQuery } from "@tanstack/react-query";
-// lib
-import { getFeedbacks } from "@/lib/api";
+import { useAtom, useAtomValue } from "jotai";
+// store
+import {
+  feedbackCategoryAtom,
+  feedbackPageAtom,
+  feedbackStatusAtom,
+} from "@/store/feedback-filters";
+// hooks
+import { useFeedbacksQuery } from "@/data/feedback";
 // components
 import { FeedbackList } from "@/components/feedbacks/feedback-list";
 import FeedbackFilters from "@/components/feedbacks/feedback-filters";
-import { feedbackCategoryAtom, feedbackPageAtom, feedbackStatusAtom } from "@/store/feedback-filters";
 
 export default function Feedbacks() {
-  const [category, setCategory] = useAtom(feedbackCategoryAtom);
-  const [status, setStatus] = useAtom(feedbackStatusAtom);
+  // store states
+  const category = useAtomValue(feedbackCategoryAtom);
+  const status = useAtomValue(feedbackStatusAtom);
   const [page, setPage] = useAtom(feedbackPageAtom);
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["feedbacks", { category, status, page }],
-    queryFn: () => getFeedbacks({ category, status, page, limit: 10 }),
-    placeholderData: (previousData) => previousData,
-  });
+  // query
+  const { data, isLoading, isError } = useFeedbacksQuery(
+    category,
+    status,
+    page,
+  );
 
   if (isLoading) return <p>Loading feedbacks...</p>;
   if (isError) return <p>Failed to load feedbacks</p>;
