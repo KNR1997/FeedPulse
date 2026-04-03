@@ -1,4 +1,8 @@
-import { createFeedbackDto, feedbackListDto, feedbackResponseDto } from "../dtos/feedback.dto.js";
+import {
+  createFeedbackDto,
+  feedbackListDto,
+  feedbackResponseDto,
+} from "../dtos/feedback.dto.js";
 import {
   createFeedbackService,
   deleteFeedbackService,
@@ -7,6 +11,7 @@ import {
   retriggerFeedbackAnalysisService,
   updateFeedbackService,
 } from "../services/feedback.serivce.js";
+import { errorResponse, successResponse } from "../utils/apiResponse.js";
 
 // @desc    Create Feedback
 // @route   POST /api/Feedbacks
@@ -14,9 +19,15 @@ export const createFeedback = async (req, res, next) => {
   try {
     const dto = createFeedbackDto(req.body);
     const feedback = await createFeedbackService(dto);
-    res.status(201).json(feedback);
+
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback created successfully",
+      201,
+    );
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, err.message, 400);
   }
 };
 
@@ -24,11 +35,17 @@ export const createFeedback = async (req, res, next) => {
 // @route   POST /api/Feedbacks/:id/analyze
 export const retriggerFeedbackAnalysis = async (req, res, next) => {
   try {
-    const feedbackId  = req.params.id
-    const feedback = await retriggerFeedbackAnalysisService(feedbackId );
-    res.status(201).json(feedback);
+    const feedbackId = req.params.id;
+    const feedback = await retriggerFeedbackAnalysisService(feedbackId);
+
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback analysis triggered",
+      200,
+    );
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, err.message, 400);
   }
 };
 
@@ -38,12 +55,12 @@ export const getFeedbacks = async (req, res, next) => {
   try {
     const result = await getFeedbacksService(req.query);
 
-    res.status(200).json({
-      data: feedbackListDto(result.data),
+    return successResponse(res, {
+      feedbacks: feedbackListDto(result.data),
       pagination: result.pagination,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, err.message, 500);
   }
 };
 
@@ -53,12 +70,15 @@ export const getFeedback = async (req, res, next) => {
   try {
     const feedback = await getFeedbackService(req.params.id);
 
-    if (!feedback)
-      return res.status(404).json({ message: "Feedback not found" });
+    if (!feedback) return errorResponse(res, "Feedback not found", 404);
 
-    res.status(200).json(feedbackResponseDto(feedback));
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback retrieved",
+    );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, err.message, 500);
   }
 };
 
@@ -68,12 +88,15 @@ export const updateFeedback = async (req, res, next) => {
   try {
     const feedback = await updateFeedbackService(req.params.id, req.body);
 
-    if (!feedback)
-      return res.status(404).json({ message: "Feedback not found" });
+    if (!feedback) return errorResponse(res, "Feedback not found", 404);
 
-    res.status(200).json(feedback);
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback updated",
+    );
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, err.message, 400);
   }
 };
 
@@ -83,11 +106,10 @@ export const deleteFeedback = async (req, res, next) => {
   try {
     const feedback = await deleteFeedbackService(req.params.id);
 
-    if (!feedback)
-      return res.status(404).json({ message: "Feedback not found" });
+    if (!feedback) return errorResponse(res, "Feedback not found", 404);
 
-    res.status(200).json({ message: "Feedback deleted" });
+    return successResponse(res, null, "Feedback deleted successfully");
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, err.message, 500);
   }
 };
