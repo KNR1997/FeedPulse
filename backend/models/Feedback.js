@@ -20,12 +20,14 @@ const feedbackSchema = new mongoose.Schema(
       type: String,
       enum: ["Bug", "Feature Request", "Improvement", "Other"],
       required: [true, "Category is required"],
+      index: true,
     },
 
     status: {
       type: String,
       enum: ["New", "In Review", "Resolved"],
       default: "New",
+      index: true,
     },
 
     submitterName: {
@@ -57,6 +59,7 @@ const feedbackSchema = new mongoose.Schema(
       type: Number,
       min: 1,
       max: 10,
+      index: true,
     },
 
     ai_summary: {
@@ -78,6 +81,8 @@ const feedbackSchema = new mongoose.Schema(
     timestamps: true, // automatically adds createdAt and updatedAt
   },
 );
+
+feedbackSchema.index({ createdAt: -1 });
 
 const Feedback = mongoose.model("Feedback", feedbackSchema);
 
