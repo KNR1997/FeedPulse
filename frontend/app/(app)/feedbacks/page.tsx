@@ -19,14 +19,14 @@ export default function Feedbacks() {
   const status = useAtomValue(feedbackStatusAtom);
   const [page, setPage] = useAtom(feedbackPageAtom);
   // query
-  const { data, isLoading, isError } = useFeedbacksQuery(
+  const { feedbacks, paginationrInfo, loading, error } = useFeedbacksQuery(
     category,
     status,
     page,
   );
 
-  if (isLoading) return <p>Loading feedbacks...</p>;
-  if (isError) return <p>Failed to load feedbacks</p>;
+  if (loading) return <p>Loading feedbacks...</p>;
+  if (error) return <p>Failed to load feedbacks</p>;
 
   return (
     <div className="my-10 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -35,8 +35,8 @@ export default function Feedbacks() {
       <FeedbackFilters />
 
       <FeedbackList
-        feedbacks={data.data}
-        pagination={data.pagination}
+        feedbacks={feedbacks}
+        pagination={paginationrInfo}
         onPageChange={setPage}
       />
     </div>
