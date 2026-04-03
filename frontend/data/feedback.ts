@@ -1,5 +1,6 @@
 import {
   deleteFeedback,
+  getFeedback,
   getFeedbacks,
   retriggerFeedbackAnalysis,
   updateFeedback,
@@ -12,7 +13,7 @@ export const useFeedbacksQuery = (
   status?: string,
   page?: number,
 ) => {
-  return useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ["feedbacks", { category, status, page }],
     queryFn: () =>
       getFeedbacks({
@@ -23,6 +24,26 @@ export const useFeedbacksQuery = (
       }),
     placeholderData: (previousData) => previousData,
   });
+
+  return {
+    feedbacks: data?.feedbacks ?? [],
+    paginationrInfo: data?.pagination ?? null,
+    loading: isLoading,
+    error,
+  };
+};
+
+export const useFeedbackQuery = (feedbackId: string) => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["feedbacks"],
+    queryFn: () => getFeedback(feedbackId),
+  });
+
+  return {
+    feedback: data,
+    loading: isLoading,
+    error,
+  };
 };
 
 export const useUpdateFeedbackMutation = () => {
