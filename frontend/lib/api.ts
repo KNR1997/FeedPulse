@@ -25,7 +25,7 @@ export const getFeedbacks = async (filters?: {
       },
     },
   );
-  return res.data;
+  return res.data.data;
 };
 
 export const getFeedback = async (feedbackId: string) => {
@@ -39,7 +39,7 @@ export const getFeedback = async (feedbackId: string) => {
       },
     },
   );
-  return res.data;
+  return res.data.data;
 };
 
 export const updateFeedback = async (id: string, data: { status: string }) => {
@@ -54,7 +54,7 @@ export const updateFeedback = async (id: string, data: { status: string }) => {
       },
     },
   );
-  return res.data;
+  return res.data.data;
 };
 
 export const deleteFeedback = async (feedbackId: string) => {
@@ -68,10 +68,26 @@ export const deleteFeedback = async (feedbackId: string) => {
       },
     },
   );
-  return res.data;
+  return res.data.data;
 };
 
 export const login = async (data: LoginInput) => {
   const res = await axios.post(`http://localhost:8080/api/auth/login`, data);
+  return res.data;
+};
+
+export const retriggerFeedbackAnalysis = async (feedbackId: string) => {
+  const token = Cookies.get(AUTH_CRED);
+
+  const res = await axios.post(
+    `http://localhost:8080/api/feedbacks/${feedbackId}/analyze`,
+    {}, // POST body can be empty
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
   return res.data;
 };
