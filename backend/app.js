@@ -39,6 +39,17 @@ app.use(errorHandler);
 // Connect to MongoDB
 connectDB();
 
+const banner = `
+░█▀▀░█▀▀░█▀▀░█▀▄░█▀█░█░█░█░░░█▀▀░█▀▀
+░█▀▀░█▀▀░█▀▀░█░█░█▀▀░█░█░█░░░▀▀█░█▀▀
+░▀░░░▀▀▀░▀▀▀░▀▀░░▀░░░▀▀▀░▀▀▀░▀▀▀░▀▀▀                                                  
+`;
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log("=================================");
+  console.log("\x1b[32m%s\x1b[0m", banner); // green color
+  console.log("Server is running successfully!");
+  console.log(`Server URL: http://localhost:${port}`);
+  console.log(`Swagger Docs: http://localhost:${port}/api-docs`);
+  console.log("=================================");
 });
