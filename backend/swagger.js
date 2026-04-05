@@ -89,10 +89,21 @@ const options = {
           },
         },
 
+        FeedbackUpdate: {
+          type: "object",
+          required: ["status"],
+          properties: {
+            status: {
+              type: "string",
+              example: "Resolved",
+            },
+          },
+        },
+
         FeedbackResponse: {
           type: "object",
           properties: {
-            _id: {
+            id: {
               type: "string",
               example: "64f8a0b3f2f8e3a1c2d1e7",
             },
@@ -100,21 +111,57 @@ const options = {
               type: "string",
               example: "App Feedback",
             },
-            message: {
+            description: {
               type: "string",
-              example: "App works great but needs dark mode",
+              example:
+                "Initial admin needs to be seed or there should be register option.",
             },
-            sentiment: {
+            category: {
               type: "string",
-              example: "positive",
+              example: "Feature Request",
+            },
+            status: {
+              type: "string",
+              example: "New",
             },
             createdAt: {
               type: "string",
               format: "date-time",
             },
-            updatedAt: {
+            ai_processed: {
+              type: "boolean",
+              example: "true",
+            },
+            ai_category: {
               type: "string",
-              format: "date-time",
+              example: "positive",
+            },
+            ai_sentiment: {
+              type: "string",
+              example: "Neutral",
+            },
+            ai_priority: {
+              type: "number",
+              example: 8,
+            },
+            ai_summary: {
+              type: "string",
+              example:
+                "The user is requesting a method to create the initial admin account, either through database seeding or a registration flow, to ensure system accessibility after installation.",
+            },
+          },
+        },
+
+        UpdateFeedbackResponse: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              example: "64f8a0b3f2f8e3a1c2d1e7",
+            },
+            status: {
+              type: "string",
+              example: "New",
             },
           },
         },
