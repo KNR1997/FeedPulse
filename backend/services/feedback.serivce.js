@@ -72,7 +72,7 @@ export const retriggerFeedbackAnalysisService = async (feedbackId) => {
   await analyzeFeedbackWithGemini(
     feedback._id,
     feedback.title,
-    feedback.description
+    feedback.description,
   );
 
   return await Feedback.findById(feedbackId);
@@ -124,14 +124,23 @@ export const getFeedbackAnalyticsService = async () => {
 
   const result = analytics[0];
 
+  const statusKeyMap = {
+    New: "NEW",
+    "In Review": "IN_REVIEW",
+    Resolved: "RESOLVED",
+  };
+
   const statusMap = {
-    New: 0,
-    "In Review": 0,
-    Resolved: 0,
+    NEW: 0,
+    IN_REVIEW: 0,
+    RESOLVED: 0,
   };
 
   result.statusCounts.forEach((s) => {
-    statusMap[s._id] = s.count;
+    const key = statusKeyMap[s._id];
+    if (key) {
+      statusMap[key] = s.count;
+    }
   });
 
   return {
