@@ -92,10 +92,28 @@ export const useUpdateFeedbackMutation = () => {
   });
 };
 
+// export const useAnalyzeFeedbackMutation = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: (feedbackId: string) => retriggerFeedbackAnalysis(feedbackId),
+
+//     onSuccess: () => {
+//       toast.success("AI analysis completed");
+//       queryClient.invalidateQueries({ queryKey: ["feedback"] });
+//       queryClient.invalidateQueries({ queryKey: ["feedbacks"] });
+//     },
+
+//     onError: () => {
+//       toast.error("AI analysis failed!");
+//     },
+//   });
+// };
+
 export const useAnalyzeFeedbackMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (feedbackId: string) => retriggerFeedbackAnalysis(feedbackId),
 
     onSuccess: () => {
@@ -108,6 +126,13 @@ export const useAnalyzeFeedbackMutation = () => {
       toast.error("AI analysis failed!");
     },
   });
+
+  return {
+    analyzeFeedback: mutation.mutateAsync,
+    data: mutation.data,
+    isPending: mutation.isPending,
+    error: mutation.error,
+  };
 };
 
 export const useDeleteFeedbackMutation = () => {

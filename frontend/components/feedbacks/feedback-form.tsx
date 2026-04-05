@@ -28,14 +28,39 @@ export const FeedbackAdminForm = ({ initialValues }: Props) => {
   // mutations
   const { mutate: updateFeedback, isPending: isUpdating } =
     useUpdateFeedbackMutation();
-  const { mutate: analyzeFeedback, isPending: isAnalyzing } =
-    useAnalyzeFeedbackMutation();
+  // const { mutateAsync: analyzeFeedback, isPending: isAnalyzing } =
+  //   useAnalyzeFeedbackMutation();
+  const {
+    analyzeFeedback,
+    data: analyzeData,
+    isPending: isAnalyzing,
+    error: analyzeError,
+  } = useAnalyzeFeedbackMutation();
 
   const handleFeedbackSubmit = (values: Feedback) => {
     updateFeedback({
       id: initialValues.id,
       status: values.status,
     });
+  };
+
+  const handleAnalyzeFeedback = async (
+    feedbackId: string,
+    setFieldValue: any,
+  ) => {
+    try {
+      const response = await analyzeFeedback(feedbackId);
+
+      const result = response.data;
+
+      setFieldValue("ai_category", result.ai_category);
+      setFieldValue("ai_sentiment", result.ai_sentiment);
+      setFieldValue("ai_priority", result.ai_priority);
+      setFieldValue("ai_processed", result.ai_processed);
+      setFieldValue("ai_summary", result.ai_summary);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -112,10 +137,10 @@ export const FeedbackAdminForm = ({ initialValues }: Props) => {
               />
               <Button
                 color="secondary"
-                onPress={() => analyzeFeedback(values.id)}
+                onPress={() => handleAnalyzeFeedback(values.id, setFieldValue)}
                 isLoading={isAnalyzing}
               >
-                Analyze Feedback
+                {isAnalyzing ? "Analyzing" : "Analyze Feedback"}
               </Button>
             </CardBody>
           </Card>
@@ -144,7 +169,7 @@ export const FeedbackAdminForm = ({ initialValues }: Props) => {
                 color="primary"
                 isLoading={isUpdating}
               >
-                Update Status
+                {isUpdating ? "Updating" : "Update Status"}
               </Button>
             </CardBody>
           </Card>
