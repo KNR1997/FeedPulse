@@ -26,3 +26,14 @@ export const createFeedbackDto = (body) => {
     submitterEmail: body.submitterEmail,
   };
 };
+
+export const updateFeedbackDto = (body) => {
+  return {
+    status: body.status,
+  };
+};
+
+export const updateFeedbackResponseDto = (feedback) => ({
+  id: feedback._id,
+  status: feedback.status,
+});

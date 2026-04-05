@@ -81,25 +81,6 @@ router.get("/", protect, getFeedbacks);
 
 /**
  * @swagger
- * /api/Feedbacks/analytics:
- *   get:
- *     summary: Get feedback analytics
- *     tags: [Feedback]
- *     responses:
- *       200:
- *         description: Analytics data retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               additionalProperties: true
- *      401:
- *         description: Not authorized, no token
- */
-router.get("/analytics", protect, getFeedbackAnalytics);
-
-/**
- * @swagger
  * /api/Feedbacks/{id}:
  *   get:
  *     summary: Get a single feedback by ID
@@ -141,15 +122,15 @@ router.get("/:id", protect, getFeedback);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/FeedbackCreate'
+ *             $ref: '#/components/schemas/FeedbackUpdate'
  *     responses:
  *       200:
  *         description: Feedback updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/FeedbackResponse'
- *       401: 
+ *               $ref: '#/components/schemas/UpdateFeedbackResponse'
+ *       401:
  *         description: Not authorized, no token
  *       404:
  *         description: Feedback not found
@@ -180,6 +161,25 @@ router.delete("/:id", protect, deleteFeedback);
 
 /**
  * @swagger
+ * /api/Feedbacks/analytics:
+ *   get:
+ *     summary: Get feedback analytics
+ *     tags: [Feedback]
+ *     responses:
+ *       200:
+ *         description: Analytics data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               additionalProperties: true
+ *     401:
+ *         description: Not authorized, no token
+ */
+router.get("/analytics", protect, getFeedbackAnalytics);
+
+/**
+ * @swagger
  * /api/Feedbacks/{id}/analyze:
  *   post:
  *     summary: Re-trigger feedback analysis
@@ -197,7 +197,7 @@ router.delete("/:id", protect, deleteFeedback);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/FeedbackResponse'
- *      401:
+ *       401:
  *         description: Not authorized, no token
  *       404:
  *         description: Feedback not found

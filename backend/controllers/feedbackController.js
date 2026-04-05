@@ -2,6 +2,8 @@ import {
   createFeedbackDto,
   feedbackListDto,
   feedbackResponseDto,
+  updateFeedbackDto,
+  updateFeedbackResponseDto,
 } from "../dtos/feedback.dto.js";
 import {
   createFeedbackService,
@@ -26,24 +28,6 @@ export const createFeedback = async (req, res, next) => {
       feedbackResponseDto(feedback),
       "Feedback created successfully",
       201,
-    );
-  } catch (err) {
-    return errorResponse(res, err.message, 400);
-  }
-};
-
-// @desc    Re-trigger Feedback analysis
-// @route   POST /api/Feedbacks/:id/analyze
-export const retriggerFeedbackAnalysis = async (req, res, next) => {
-  try {
-    const feedbackId = req.params.id;
-    const feedback = await retriggerFeedbackAnalysisService(feedbackId);
-
-    return successResponse(
-      res,
-      feedbackResponseDto(feedback),
-      "Feedback analysis triggered",
-      200,
     );
   } catch (err) {
     return errorResponse(res, err.message, 400);
@@ -87,13 +71,14 @@ export const getFeedback = async (req, res, next) => {
 // @route   UPDATE /api/Feedbacks/:id
 export const updateFeedback = async (req, res, next) => {
   try {
-    const feedback = await updateFeedbackService(req.params.id, req.body);
+    const dto = updateFeedbackDto(req.body);
+    const feedback = await updateFeedbackService(req.params.id, dto);
 
     if (!feedback) return errorResponse(res, "Feedback not found", 404);
 
     return successResponse(
       res,
-      feedbackResponseDto(feedback),
+      updateFeedbackResponseDto(feedback),
       "Feedback updated",
     );
   } catch (err) {
@@ -112,6 +97,24 @@ export const deleteFeedback = async (req, res, next) => {
     return successResponse(res, null, "Feedback deleted successfully");
   } catch (err) {
     return errorResponse(res, err.message, 500);
+  }
+};
+
+// @desc    Re-trigger Feedback analysis
+// @route   POST /api/Feedbacks/:id/analyze
+export const retriggerFeedbackAnalysis = async (req, res, next) => {
+  try {
+    const feedbackId = req.params.id;
+    const feedback = await retriggerFeedbackAnalysisService(feedbackId);
+
+    return successResponse(
+      res,
+      feedbackResponseDto(feedback),
+      "Feedback analysis triggered",
+      200,
+    );
+  } catch (err) {
+    return errorResponse(res, err.message, 400);
   }
 };
 
