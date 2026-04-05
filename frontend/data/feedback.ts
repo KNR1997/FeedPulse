@@ -44,7 +44,7 @@ export const useFeedbacksQuery = ({
 
 export const useFeedbackQuery = (feedbackId: string) => {
   const { data, error, isLoading } = useQuery({
-    queryKey: ["feedbacks"],
+    queryKey: ["feedbacks", feedbackId],
     queryFn: () => getFeedback(feedbackId),
   });
 
