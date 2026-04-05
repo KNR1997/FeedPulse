@@ -38,10 +38,16 @@ export const analyzeFeedbackWithGemini = async (
     const cleanedText = text.replace(/```json|```/g, "").trim();
     const aiData = JSON.parse(cleanedText);
 
+    const sentimentMap = {
+      positive: "Positive",
+      neutral: "Neutral",
+      negative: "Negative",
+    };
+
     // Update MongoDB
     await Feedback.findByIdAndUpdate(feedbackId, {
       ai_category: aiData.category,
-      ai_sentiment: aiData.sentiment,
+      ai_sentiment: sentimentMap[aiData.sentiment?.toLowerCase()],
       ai_priority: aiData.priority_score,
       ai_summary: aiData.summary,
       ai_tags: aiData.tags,
