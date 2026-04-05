@@ -81,6 +81,25 @@ router.get("/", protect, getFeedbacks);
 
 /**
  * @swagger
+ * /api/Feedbacks/analytics:
+ *   get:
+ *     summary: Get feedback analytics
+ *     tags: [Feedback]
+ *     responses:
+ *       200:
+ *         description: Analytics data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               additionalProperties: true
+ *     401:
+ *         description: Not authorized, no token
+ */
+router.get("/analytics", protect, getFeedbackAnalytics);
+
+/**
+ * @swagger
  * /api/Feedbacks/{id}:
  *   get:
  *     summary: Get a single feedback by ID
@@ -158,25 +177,6 @@ router.put("/:id", protect, updateFeedback);
  *         description: Feedback not found
  */
 router.delete("/:id", protect, deleteFeedback);
-
-/**
- * @swagger
- * /api/Feedbacks/analytics:
- *   get:
- *     summary: Get feedback analytics
- *     tags: [Feedback]
- *     responses:
- *       200:
- *         description: Analytics data retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               additionalProperties: true
- *     401:
- *         description: Not authorized, no token
- */
-router.get("/analytics", protect, getFeedbackAnalytics);
 
 /**
  * @swagger
