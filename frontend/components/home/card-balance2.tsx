@@ -10,7 +10,7 @@ export const CardBalance2 = ({averagePriority}: {averagePriority: number}) => {
           <Community />
           <div className="flex flex-col">
             <span className="text-default-900">Average Priority Score</span>
-            <span className="text-default-900 text-xs">{averagePriority}</span>
+            <span className="text-default-900 text-xs">{averagePriority.toFixed(2)}</span>
           </div>
         </div>
         {/* <div className="flex gap-2.5 py-2 items-center">
