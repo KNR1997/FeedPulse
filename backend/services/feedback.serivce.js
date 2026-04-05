@@ -17,21 +17,6 @@ export const createFeedbackService = async (createDto) => {
   return savedFeedback;
 };
 
-// Re-Trigger Feedback ai anaylysis
-export const retriggerFeedbackAnalysisService = async (feedbackId) => {
-  const feedback = await Feedback.findById(feedbackId);
-  if (!feedback) throw new Error("Feedback not found");
-
-  // async Gemini call
-  analyzeFeedbackWithGemini(
-    feedback._id,
-    feedback.title,
-    feedback.description,
-  ).catch((err) => console.error("Gemini analysis error:", err.message));
-
-  return feedback;
-};
-
 // Get Feedbacks
 export const getFeedbacksService = async (query) => {
   const { category, status, page = 1, limit = 5 } = query;
@@ -67,13 +52,28 @@ export const getFeedbackService = async (id) => {
 };
 
 // Update
-export const updateFeedbackService = async (id, data) => {
-  return await Feedback.findByIdAndUpdate(id, data, { new: true });
+export const updateFeedbackService = async (id, updateDto) => {
+  return await Feedback.findByIdAndUpdate(id, updateDto, { new: true });
 };
 
 // Delete
 export const deleteFeedbackService = async (id) => {
   return await Feedback.findByIdAndDelete(id);
+};
+
+// Re-Trigger Feedback ai anaylysis
+export const retriggerFeedbackAnalysisService = async (feedbackId) => {
+  const feedback = await Feedback.findById(feedbackId);
+  if (!feedback) throw new Error("Feedback not found");
+
+  // async Gemini call
+  analyzeFeedbackWithGemini(
+    feedback._id,
+    feedback.title,
+    feedback.description,
+  ).catch((err) => console.error("Gemini analysis error:", err.message));
+
+  return feedback;
 };
 
 // Feedback Analytics
