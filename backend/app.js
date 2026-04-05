@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import auth from "./routes/auth.js";
-import posts from "./routes/posts.js";
 import feedbacks from "./routes/feedbacks.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpecs from "./swagger.js";
@@ -29,7 +28,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Routes
 app.use("/api/auth", auth);
-app.use("/api/posts", posts);
 app.use("/api/feedbacks", feedbacks);
 
 // Error handler
