@@ -67,13 +67,14 @@ export const retriggerFeedbackAnalysisService = async (feedbackId) => {
   if (!feedback) throw new Error("Feedback not found");
 
   // async Gemini call
-  analyzeFeedbackWithGemini(
+  await analyzeFeedbackWithGemini(
     feedback._id,
     feedback.title,
     feedback.description,
   ).catch((err) => console.error("Gemini analysis error:", err.message));
 
-  return feedback;
+  const updatedFeedback = await Feedback.findById(feedbackId);
+  return updatedFeedback;
 };
 
 // Feedback Analytics
