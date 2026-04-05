@@ -51,5 +51,6 @@ export const analyzeFeedbackWithGemini = async (
     console.log("Gemini analysis saved for:", feedbackId);
   } catch (error) {
     console.error("Gemini error:", error.message);
+    throw new Error("Gemini analysis failed: " + error.message);
   }
 };

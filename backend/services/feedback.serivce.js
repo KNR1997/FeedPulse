@@ -64,17 +64,18 @@ export const deleteFeedbackService = async (id) => {
 // Re-Trigger Feedback ai anaylysis
 export const retriggerFeedbackAnalysisService = async (feedbackId) => {
   const feedback = await Feedback.findById(feedbackId);
-  if (!feedback) throw new Error("Feedback not found");
 
-  // async Gemini call
+  if (!feedback) {
+    throw new Error("Feedback not found");
+  }
+
   await analyzeFeedbackWithGemini(
     feedback._id,
     feedback.title,
-    feedback.description,
-  ).catch((err) => console.error("Gemini analysis error:", err.message));
+    feedback.description
+  );
 
-  const updatedFeedback = await Feedback.findById(feedbackId);
-  return updatedFeedback;
+  return await Feedback.findById(feedbackId);
 };
 
 // Feedback Analytics

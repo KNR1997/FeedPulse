@@ -110,11 +110,11 @@ export const retriggerFeedbackAnalysis = async (req, res, next) => {
     return successResponse(
       res,
       feedbackResponseDto(feedback),
-      "Feedback analysis triggered",
+      "Feedback analysis completed",
       200,
     );
   } catch (err) {
-    return errorResponse(res, err.message, 400);
+    return errorResponse(res, err.message, 500);
   }
 };
 
