@@ -23,6 +23,7 @@ import { Feedback } from "@/types";
 import { useFeedbacksQuery } from "@/data/feedback";
 // components
 import { EyeIcon } from "@/components/icons/eyes-icon";
+import { Routes } from "@/config/routes";
 
 export const CardTransactions = () => {
   const router = useRouter();
@@ -39,7 +40,7 @@ export const CardTransactions = () => {
   ];
 
   const handleViewFeedback = (feedbackId: string) => {
-    router.push(`/feedbacks/${feedbackId}`);
+    router.push(`${Routes.feedbacks}/${feedbackId}`);
   };
 
   return (
