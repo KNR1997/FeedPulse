@@ -21,6 +21,8 @@ import {
   Chip,
   Pagination,
 } from "@nextui-org/react";
+// config
+import { Routes } from "@/config/routes";
 // hooks
 import { useRouter } from "next/navigation";
 import { useModalAction } from "@/components/ui/modal/modal-context";
@@ -58,7 +60,7 @@ export const FeedbackList = ({
   ];
 
   const handleViewFeedback = (feedbackId: string) => {
-    router.push(`/feedbacks/${feedbackId}`);
+    router.push(`${Routes.feedbacks}/${feedbackId}`);
   };
 
   const handleFeedbackDelete = (feedbackId: string) => {

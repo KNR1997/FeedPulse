@@ -2,6 +2,7 @@
 
 This repository contains a full-stack application built with **Express.js** (backend) and **Next.js 14** (frontend). The project is structured with separate `backend` and `frontend` folders.
 
+![Landing Page](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/landing.png)
 
 ---
 
@@ -43,6 +44,12 @@ npm install
 npm run dev
 ```
 
+6. Create a admin user using swagger:
+
+```
+Swagger-docs: http://localhost:8080/api-docs
+```
+
 ### 2. Frontend
 
 1. Navigate to the frontend folder:
@@ -68,10 +75,13 @@ npm install
 npm run dev
 ```
 
-## Screenshots
+### 3. Gemini-3-flash-preview
 
-### Landing Page
-![Landing Page](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/landing.png)
+- Get Gemini-3-flash-preview model key by visting this official site:
+- https://aistudio.google.com
+
+
+## Screenshots
 
 ### Create Feedback
 ![Create Feedback](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/submit_feedback.png)
@@ -89,7 +99,11 @@ npm run dev
 ![Feedback View](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/feedback.png)
 
 ### Light Mode
-![Feedback View](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/light_mode.png)
+![Home View](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/light_mode.png)
+
+![Feedbacks View](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/light_mode_2.png)
+
+![Feedback View](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/light_mode_3.png)
 
 ### Swagger
 ![Feedback View](https://github.com/KNR1997/FeedPulse/blob/main/frontend/public/screenshots/swagger.png)

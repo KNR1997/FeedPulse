@@ -87,7 +87,8 @@ export const FeedbackForm = () => {
                 errorMessage={errors.category}
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0] as string;
-                  setFieldValue("category", selected);
+                  if (selected)
+                    setFieldValue("category", selected);
                 }}
               >
                 {Object.values(FeedbackCategoryType).map((category) => (

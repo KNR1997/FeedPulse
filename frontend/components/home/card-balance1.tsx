@@ -7,7 +7,7 @@ export const CardBalance1 = ({
   statusCounts,
 }: {
   totalFeedbacks: number;
-  statusCounts: { New: number; InReview: number; Resolved: number };
+  statusCounts: { NEW: number; IN_REVIEW: number; RESOLVED: number };
 }) => {
   return (
     <Card className="xl:max-w-sm bg-primary rounded-xl shadow-md px-3 w-full">
@@ -27,7 +27,7 @@ export const CardBalance1 = ({
           <div>
             <div>
               <span className="font-semibold text-success text-xs">{"↓"}</span>
-              <span className="text-xs text-white">{statusCounts?.New}</span>
+              <span className="text-xs text-white">{statusCounts?.NEW}</span>
             </div>
             <span className="text-white text-xs">New</span>
           </div>
@@ -35,7 +35,9 @@ export const CardBalance1 = ({
           <div>
             <div>
               <span className="font-semibold text-danger text-xs">{"↑"}</span>
-              <span className="text-xs text-white">{statusCounts?.InReview}</span>
+              <span className="text-xs text-white">
+                {statusCounts?.IN_REVIEW}
+              </span>
             </div>
             <span className="text-white text-xs">In-Review</span>
           </div>
@@ -43,7 +45,9 @@ export const CardBalance1 = ({
           <div>
             <div>
               <span className="font-semibold text-danger text-xs">{"⭐"}</span>
-              <span className="text-xs text-white">{statusCounts?.Resolved}</span>
+              <span className="text-xs text-white">
+                {statusCounts?.RESOLVED}
+              </span>
             </div>
             <span className="text-white text-xs">Resolved</span>
           </div>
